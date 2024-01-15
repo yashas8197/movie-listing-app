@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="my-4">Movie Database</h1>
+
+    <h2 class="my-3">GET Movie</h2>
+
+    <button class="btn btn-primary" id="getMovieBtn">Get Movie</button>
+
+    <ul class="my-4 list-group" id="movieList"></ul>
+
+    <h2>POST Movie</h2>
+
+    <form id="movieEntryForm">
+
+      <label for="titleInput">Title:</label><br>
+      <input class="form-control" id="titleInput" />
+      <br><br>
+
+      <label for="releaseYearInput">Release Year:</label><br>
+      <input class="form-control" id="releaseYearInput" />
+      <br><br>
+
+      <label for="selectGenre">Genre:</label><br>
+      <select class="form-control" id="selectGenre">
+        <option value="Drama">Drama</option>
+        <option value="Comedy">Comedy</option>
+        <option value="Romance">Romance</option>
+        <option value="Thiller">Thiller</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Horror">Horror</option>
+        <option value="Sports">Sports</option>
+        <option value="Musical">Musical</option>
+        <option value="Others">Others</option>
+      </select>
+      <br><br>
+
+      <label for="directorInput">Director:</label><br>
+      <input class="form-control" id="directorInput" />
+      <br><br>
+
+      <label for="languageInput">Language:</label><br>
+      <input class="form-control" id="languageInput" />
+      <br><br>
+
+      <label>Country:</label><br>
+      <select class="form-control" id="selectCountry">
+        <option value="India">India</option>
+        <option value="USA">USA</option>
+        <option value="UK">UK</option>
+      </select>
+      <br><br>
+
+      <label for="ratingInput">Rating:</label><br>
+      <input class="form-control" id="ratingInput" />
+      <br><br>
+
+      <label for="plotTextarea">Plot:</label><br>
+      <textarea class="form-control" id="plotTextarea"></textarea>
+      <br><br>
+
+      <label for="awardsInput">Awards:</label><br>
+      <input class="form-control" id="awardsInput" />
+      <br><br>
+
+      <label for="postInput">Post URL:</label><br>
+      <input class="form-control" id="postInput" />
+      <br><br>
+
+      <label for="trailerInput">Trailer URL:</label><br>
+      <input class="form-control" id="trailerInput" />
+      <br><br>
+
+      <button class="btn btn-success" type="submit">Add Movie</button>
+
+    </form>
+
+    <div class="my-4" id="dataContainer"></div>
+  </div>
+
+
+
+  <script>
+    const getMovieBtn = document.querySelector("#getMovieBtn")
+    const movieList = document.querySelector("#movieList")
+    const apiUrl = 'https://va-5-assignment-express-student-neog.replit.app/movies'
+
+    getMovieBtn.addEventListener('click', function () {
+      movieList.innerHTML = " "
+      fetch(apiUrl)
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (data) {
+          console.log(data)
+          for (let i = 0; i < data.length; i++) {
+            const listItem = document.createElement('li')
+
+            listItem.className = 'list-group-item text-center'
+
+            listItem.innerHTML = `<h5>Movie ID: ${data[i]._id}<br>${JSON.stringify(data[i])}`
+            movieList.appendChild(listItem)
+          }
+
+        })
+    })
+
+    const movieEntryForm = document.querySelector('#movieEntryForm')
+    const titleInput = document.querySelector("#titleInput")
+    const releaseYearInput = document.querySelector("#releaseYearInput")
+    const selectGenre = document.querySelector("#selectGenre")
+    const directorInput = document.querySelector("#directorInput")
+    const languageInput = document.querySelector("#languageInput")
+    const selectCountry = document.querySelector("#selectCountry")
+    const ratingInput = document.querySelector("#ratingInput")
+    const plotTextarea = document.querySelector("#plotTextarea")
+    const awardsInput = document.querySelector("#awardsInput")
+    const postInput = document.querySelector("#postInput")
+    const trailerInput = document.querySelector("#trailerInput")
+    const dataContainer = document.querySelector("#dataContainer")
+
+
+    movieEntryForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+
+      const responseData = {
+        title: titleInput.value,
+        releaseYear: releaseYearInput.value,
+        genre: selectGenre.value,
+        director: directorInput.value,
+        language: languageInput.value,
+        country: selectCountry.value,
+        rating: ratingInput.value,
+        plot: plotTextarea.value,
+        awards: awardsInput.value,
+        posterUrl: postInput.value,
+        trailerUrl: trailerInput.value
+      }
+
+
+      fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(responseData),
+        headers: {
+          'content-type': "application/json"
+        }
+      })
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (data) {
+          if (data) {
+            dataContainer.textContent = "Movie added successfully"
+          } else {
+            dataContainer.textContent = `Unable to post data`
+          }
+
+        })
+        .catch(function (error) {
+          dataContainer.textContent = "Something went wrong"
+        })
+    })
+
+
+  </script>
+</body>
+
+</html>
