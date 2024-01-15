@@ -107,7 +107,7 @@
           for (let i = 0; i < data.length; i++) {
             const listItem = document.createElement('li')
 
-            listItem.className = 'list-group-item text-center'
+            listItem.className = 'list-group-item text-break'
 
             listItem.innerHTML = `<h5>Movie ID: ${data[i]._id}<br>${JSON.stringify(data[i])}`
             movieList.appendChild(listItem)
